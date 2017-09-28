@@ -14,6 +14,19 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserDTO {
 
+    public class Details {
+        @Getter @Setter private String email;
+        @Getter @Setter private String mailingAddress;
+        @Getter @Setter private String city;
+        @Getter @Setter private String phoneNumber;
+        @Getter @Setter private String about;
+        @Getter @Setter private String preferredContact;
+    }
+
+    public enum ActivationStatus {
+        INACTIVE, ACTIVE
+    }
+
     @NonNull @Getter @Setter private Long id;
 
     @NonNull @Getter @Setter private String nickname;

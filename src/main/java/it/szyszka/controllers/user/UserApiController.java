@@ -1,6 +1,6 @@
 package it.szyszka.controllers.user;
 
-import it.szyszka.datamodel.server.ServerResponse;
+import it.szyszka.controllers.security.SecurityService;
 import it.szyszka.datamodel.server.ServerResponseCode;
 import it.szyszka.datamodel.server.ServerSetResponse;
 import it.szyszka.datamodel.user.User;
@@ -22,20 +22,23 @@ public class UserApiController {
 
     static Logger logger = Logger.getLogger(UserApiController.class);
 
-    @Autowired
-    UserService userService;
+    @Autowired private UserService userService;
+    @Autowired private SecurityService securityService;
 
     @RequestMapping(value = "/reg", method = RequestMethod.POST)
     public ResponseEntity<ServerResponseCode> signUp(@RequestBody User user) {
         ServerResponseCode status = ServerResponseCode.NO_RESPONSE;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         if(user != null) {
             status = userService.saveUser(user);
         }
 
-        return new ResponseEntity<>(
-                status,
-                status == ServerResponseCode.USER_SAVED ? HttpStatus.OK : HttpStatus.BAD_REQUEST
-        );
+        if(status == ServerResponseCode.USER_SAVED) {
+            securityService.createEmailVerificationRequest(user);
+            httpStatus = HttpStatus.OK;
+        }
+
+        return new ResponseEntity<>(status, httpStatus);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -52,13 +55,13 @@ public class UserApiController {
     @RequestMapping(value = "/trust", method = RequestMethod.POST)
     public ResponseEntity<ServerSetResponse<UserDTO>> trustUser(@RequestParam String userEmail, @RequestParam String toTrustEmail){
         User user = userService.findUserByEmail(userEmail);
-        Set<User> userTrusted = user.getTrusted();
+        Set<UserDTO> userTrusted = UserDTO.convertToSimpleSet(user.getTrusted());
         try {
             userTrusted = userService.aTrustsB(user, toTrustEmail);
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
                             ServerResponseCode.SUCCESSFULLY_CREATED_TRUST_RELATION,
-                            UserDTO.convertToSimpleSet(userTrusted)
+                            userTrusted
                     ),
                     HttpStatus.OK
             );
@@ -67,7 +70,7 @@ public class UserApiController {
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
                             ServerResponseCode.FAILED_TO_CREATE_TRUST_RELATION,
-                            UserDTO.convertToSimpleSet(userTrusted)
+                            userTrusted
                     ),
                     HttpStatus.BAD_REQUEST
             );
@@ -77,14 +80,14 @@ public class UserApiController {
     @RequestMapping(value = "/makeFriends", method = RequestMethod.POST)
     public ResponseEntity<ServerSetResponse<UserDTO>> makeFriends(@RequestParam String userEmail, @RequestParam String friendEmail) {
         User user = userService.findUserByEmail(userEmail);
-        Set<User> userFriends = user.getFriends();
+        Set<UserDTO> userFriends = UserDTO.convertToSimpleSet(user.getFriends());
 
         try {
             userFriends = userService.makeFriends(user, friendEmail);
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
                             ServerResponseCode.SUCCESSFULLY_CREATED_FRIEND_RELATION,
-                            UserDTO.convertToSimpleSet(userFriends)
+                            userFriends
                     ),
                     HttpStatus.OK
             );
@@ -93,11 +96,27 @@ public class UserApiController {
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
                             ServerResponseCode.FAILED_TO_CREATE_FRIEND_RELATION,
-                            UserDTO.convertToSimpleSet(userFriends)
+                            userFriends
                     ),
                     HttpStatus.BAD_REQUEST
             );
         }
+    }
+
+    @RequestMapping(value = "/update/password", method = RequestMethod.PUT)
+    public ResponseEntity<UserDTO> updatePassword(@RequestParam String userEmail, @RequestParam String newPassword) {
+        return new ResponseEntity<>(
+                userService.updateUserPassword(userEmail, newPassword),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "update/details", method = RequestMethod.PUT)
+    public ResponseEntity<UserDTO> updateDetails(@RequestBody UserDTO.Details details) {
+        return new ResponseEntity<>(
+                userService.updateUserDetails(details),
+                HttpStatus.OK
+        );
     }
 
 }

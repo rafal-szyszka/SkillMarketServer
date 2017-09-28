@@ -26,7 +26,9 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-neo4j')
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-security')
-	compile('org.projectlombok:lombok:1.16.16')
+    compile 'org.springframework.boot:spring-boot-starter-mail:1.5.7.RELEASE'
+    compile group: 'com.google.guava', name: 'guava', version: '23.0'
+    compile('org.projectlombok:lombok:1.16.16')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
 }

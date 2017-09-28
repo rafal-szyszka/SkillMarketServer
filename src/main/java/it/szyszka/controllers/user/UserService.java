@@ -1,11 +1,15 @@
 package it.szyszka.controllers.user;
 
+import it.szyszka.datamodel.server.MailServiceImpl;
 import it.szyszka.datamodel.server.ServerResponseCode;
+import it.szyszka.datamodel.server.mails.EmailVerificationMessage;
 import it.szyszka.datamodel.user.User;
+import it.szyszka.datamodel.user.UserDTO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.AddressException;
 import java.util.Set;
 
 /**
@@ -15,10 +19,6 @@ import java.util.Set;
 public class UserService {
 
     private Logger logger = Logger.getLogger(UserService.class);
-
-    public static final int USER_SAVED = 100;
-    public static final int EMAIL_RESERVED = 110;
-    public static final int NICKNAME_RESERVED = 120;
 
     @Autowired
     UserRepository userRepo;
@@ -36,7 +36,7 @@ public class UserService {
         return userRepo.findByEmail(email);
     }
 
-    public Set<User> aTrustsB(User user, String toTrustEmail) throws UserNotFoundException {
+    public Set<UserDTO> aTrustsB(User user, String toTrustEmail) throws UserNotFoundException {
         User toTrust = userRepo.findByEmail(toTrustEmail);
         if(toTrust != null) {
             logger.info("User: " + user.getEmail() + " trusts " + toTrust.getEmail());
@@ -47,10 +47,21 @@ public class UserService {
         }
 
         userRepo.save(user);
-        return user.getTrusted();
+        return UserDTO.convertToSimpleSet(user.getTrusted());
     }
 
-    public Set<User> makeFriends(User user, String friendEmail) throws UserNotFoundException {
+    public UserDTO updateUserPassword(String userEmail, String password) {
+        return UserDTO.getSimpleUser(userRepo.updateUserPassword(userEmail, password));
+    }
+
+    public UserDTO updateUserDetails(UserDTO.Details details) {
+        return UserDTO.getSimpleUser(userRepo.updateUserDetails(
+                details.getEmail(), details.getCity(), details.getMailingAddress(), details.getPhoneNumber(),
+                details.getAbout(), details.getPreferredContact()
+            ));
+    }
+
+    public Set<UserDTO> makeFriends(User user, String friendEmail) throws UserNotFoundException {
         User friend = userRepo.findByEmail(friendEmail);
         if(friend != null) {
             logger.info("User: " + user.getEmail() + " knows " + friend.getEmail());
@@ -61,7 +72,7 @@ public class UserService {
         }
 
         userRepo.save(user);
-        return user.getFriends();
-
+        return UserDTO.convertToSimpleSet(user.getFriends());
     }
+
 }

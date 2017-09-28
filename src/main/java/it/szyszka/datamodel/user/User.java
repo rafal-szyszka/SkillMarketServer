@@ -28,6 +28,7 @@ public class User {
     @NonNull @Getter @Setter private String password;
 
     @NonNull @Getter @Setter private String city;
+    @NonNull @Getter @Setter private UserDTO.ActivationStatus status = UserDTO.ActivationStatus.INACTIVE;
 
     @Getter @Setter private String mailingAddress;
     @Getter @Setter private String phoneNumber;
