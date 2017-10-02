@@ -6,7 +6,7 @@ import it.szyszka.datamodel.messages.ProofOfPosting;
 import it.szyszka.datamodel.messages.ReceivedMessage;
 import it.szyszka.datamodel.messages.SendMessage;
 import it.szyszka.datamodel.user.User;
-import it.szyszka.modules.mails.inbox.Mailbox;
+import it.szyszka.modules.mails.Mailbox;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
