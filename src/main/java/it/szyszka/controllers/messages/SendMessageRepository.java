@@ -16,16 +16,16 @@ import java.util.List;
 public interface SendMessageRepository extends GraphRepository<SendMessage> {
 
     @Query("MATCH (n:User) -[:SEND]-> (m:Message) WHERE ID(n)={userId} RETURN m")
-    List<Message> findAllSendMessages(@Param("userId") Long userId);
+    List<Message> findAllSendMessagesByUserId(@Param("userId") Long userId);
 
     @Query("MATCH (u:User) -[r:SEND]-> (m:Message) WHERE ID(m)={messageId} and ID(u)={userId} DETACH DELETE r")
-    void deleteSendRelationByUserIdAndMessageId(
+    void deleteByIdAndUserId(
             @Param("messageId") Long messageId,
             @Param("userId") Long userId
     );
 
     @Query("MATCH (u:User) -[r:SEND]-> (m:Message) WHERE ID(m)={messageId} and ID(u)={userId} return r")
-    SendMessage findSendMessageByUserIdAndMessageId(
+    SendMessage findByIdAndSenderId(
             @Param("messageId") Long messageId,
             @Param("userId") Long userId
     );

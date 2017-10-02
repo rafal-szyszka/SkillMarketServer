@@ -12,7 +12,7 @@ public class ServerSetResponse<T> extends ServerResponse {
 
     @Getter @Setter private Set<T> setResponse;
 
-    public ServerSetResponse(ServerResponseCode code, Set<T> setResponse) {
+    public ServerSetResponse(Response code, Set<T> setResponse) {
         super(code);
         this.setResponse = setResponse;
     }

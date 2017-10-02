@@ -1,4 +1,4 @@
-package it.szyszka.modules.mails.inbox;
+package it.szyszka.modules.mails;
 
 import it.szyszka.datamodel.messages.Message;
 import it.szyszka.datamodel.messages.ReceivedMessage;
@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.util.Pair;
 
 import java.util.List;
 
@@ -25,6 +26,11 @@ public class Mailbox {
 
     public void deleteMail(Message message) {
         received.remove(message);
+    }
+
+    public Mailbox(Pair<List<Message>, List<Message>> mailbox){
+        received = mailbox.getFirst();
+        send = mailbox.getSecond();
     }
 
 }

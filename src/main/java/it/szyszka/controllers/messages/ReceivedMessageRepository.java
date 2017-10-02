@@ -16,16 +16,16 @@ import java.util.List;
 public interface ReceivedMessageRepository extends GraphRepository<ReceivedMessage> {
 
     @Query("MATCH (n:User) -[:RECEIVED]-> (m:Message) WHERE ID(n)={userId} RETURN m")
-    List<Message> findAllReceivedMessages(@Param("userId") Long userId);
+    List<Message> findAllReceivedMessagesByUserId(@Param("userId") Long userId);
 
     @Query("MATCH (u:User) -[r:RECEIVED]-> (m:Message) WHERE ID(m)={messageId} and ID(u)={userId} DETACH DELETE r")
-    void deleteReceivedRelationByUserIdAndMessageId(
+    void deleteByIdAndRecipientId(
             @Param("messageId") Long messageId,
             @Param("userId") Long userId
     );
 
     @Query("MATCH (u:User) -[r:RECEIVED]-> (m:Message) WHERE ID(m)={messageId} and ID(u)={userId} return r")
-    ReceivedMessage findReceivedMessageByUserIdAndMessageId(
+    ReceivedMessage findByIdAndRecipientId(
             @Param("messageId") Long messageId,
             @Param("userId") Long userId
     );

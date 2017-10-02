@@ -25,6 +25,7 @@ repositories {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-neo4j')
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-security')
     compile 'org.springframework.boot:spring-boot-starter-mail:1.5.7.RELEASE'
     compile group: 'com.google.guava', name: 'guava', version: '23.0'

@@ -1,8 +1,9 @@
 package it.szyszka.controllers.messages;
 
-import it.szyszka.controllers.user.UserRepository;
+import it.szyszka.controllers.user.UserService;
 import it.szyszka.datamodel.messages.PreSendMessage;
 import it.szyszka.datamodel.messages.ProofOfPosting;
+import it.szyszka.datamodel.messages.ReceivedMessage;
 import it.szyszka.datamodel.messages.SendMessage;
 import it.szyszka.datamodel.user.User;
 import it.szyszka.modules.mails.inbox.Mailbox;
@@ -21,21 +22,18 @@ public class MessagesApiController {
 
     static Logger logger = Logger.getLogger(MessagesApiController.class);
 
-    @Autowired private MailboxService service;
-    @Autowired private UserRepository userRepo;
-    @Autowired private MessageRepository messageRepo;
-    @Autowired private ReceivedMessageRepository receivedRepo;
-    @Autowired private SendMessageRepository sendRepo;
+    @Autowired private MailboxService messageService;
+    @Autowired private UserService userService;
     @Autowired private Postman postman;
 
     @RequestMapping(value = "/action/send", method = RequestMethod.POST)
     public ResponseEntity<ProofOfPosting> sendMessage(@RequestBody PreSendMessage preMessage) {
-        User sender = userRepo.findOne(preMessage.getSenderID());
-        User recipient = userRepo.findOne(preMessage.getRecipientID());
+        User sender = userService.findUserById(preMessage.getSenderID());
+        User recipient = userService.findUserById(preMessage.getRecipientID());
         ProofOfPosting proofOfPosting = new ProofOfPosting(preMessage, "FAILED", "");
 
         if(recipient != null) {
-            service.saveMessageRelations(
+            messageService.saveMessageRelations(
                     postman.deliverAndReceiveMessage(
                             sender,
                             recipient,
@@ -56,10 +54,10 @@ public class MessagesApiController {
 
     @RequestMapping(value = "/action/delete/send", method = RequestMethod.GET)
     public ResponseEntity<Void> deleteSendMessage(@RequestParam Long userId, @RequestParam Long messageId) {
-        sendRepo.deleteSendRelationByUserIdAndMessageId(messageId, userId);
-        SendMessage relation = sendRepo.findSendMessageByUserIdAndMessageId(messageId, userId);
+        messageService.deleteSendByIdAndSenderId(messageId, userId);
+        SendMessage relation = messageService.findSendRelationMessageByIdAndSenderId(messageId, userId);
 
-        messageRepo.deleteAllMessagesWithNoRelations();
+        messageService.deleteAllFreeMessages();
 
         if(relation == null) {
             logger.info("Successfully deleted send message with id: " + messageId);
@@ -72,10 +70,10 @@ public class MessagesApiController {
 
     @RequestMapping(value = "/action/delete/received", method = RequestMethod.GET)
     public ResponseEntity<Void> deleteReceivedMessage(@RequestParam Long userId, @RequestParam Long messageId) {
-        receivedRepo.deleteReceivedRelationByUserIdAndMessageId(messageId, userId);
-        SendMessage relation = sendRepo.findSendMessageByUserIdAndMessageId(messageId, userId);
+        messageService.deleteReceivedRelationByIdAndRecipientId(messageId, userId);
+        ReceivedMessage relation = messageService.findByIdAndRecipientId(messageId, userId);
 
-        messageRepo.deleteAllMessagesWithNoRelations();
+        messageService.deleteAllFreeMessages();
 
         if(relation == null) {
             logger.info("Successfully deleted received message with id: " + messageId);
@@ -86,13 +84,13 @@ public class MessagesApiController {
         }
     }
 
-    @RequestMapping(value = "/mailbox", method = RequestMethod.GET)
+    @RequestMapping(value = "/sync/mailbox", method = RequestMethod.GET)
     public ResponseEntity<Mailbox> userMailbox(@RequestParam Long userId) {
-        Mailbox mailbox = new Mailbox();
-        mailbox.setReceived(receivedRepo.findAllReceivedMessages(userId));
-        mailbox.setSend(sendRepo.findAllSendMessages(userId));
+        Mailbox mailbox = new Mailbox(
+                messageService.syncMailbox(userId)
+        );
 
-        logger.info("Loaded users \"" + userId + "\" received and send messages.");
+        logger.info("Synchronized users \"" + userId + "\" received and send messages.");
         return new ResponseEntity<>(
                 mailbox,
                 HttpStatus.OK
@@ -102,7 +100,9 @@ public class MessagesApiController {
     @RequestMapping(value = "/sync/inbox", method = RequestMethod.GET)
     public ResponseEntity<Mailbox> userInbox(@RequestParam Long userId) {
         Mailbox inbox = new Mailbox();
-        inbox.setReceived(receivedRepo.findAllReceivedMessages(userId));
+        inbox.setReceived(
+                messageService.syncMailboxyType(userId, MailboxService.MailboxType.INBOX)
+        );
 
         logger.info("Synchronized users \"" + userId + "\" received messages.");
         return new ResponseEntity<>(
@@ -114,7 +114,9 @@ public class MessagesApiController {
     @RequestMapping(value = "/sync/outbox", method = RequestMethod.GET)
     public ResponseEntity<Mailbox> userOutbox(@RequestParam Long userId) {
         Mailbox outbox = new Mailbox();
-        outbox.setSend(sendRepo.findAllSendMessages(userId));
+        outbox.setSend(
+                messageService.syncMailboxyType(userId, MailboxService.MailboxType.OUTBOX)
+        );
 
         logger.info("Synchronized users \"" + userId + "\" send messages.");
         return new ResponseEntity<>(

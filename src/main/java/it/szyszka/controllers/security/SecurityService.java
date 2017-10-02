@@ -1,10 +1,13 @@
 package it.szyszka.controllers.security;
 
-import it.szyszka.datamodel.security.VerificationToken;
+import it.szyszka.controllers.user.UserRepository;
 import it.szyszka.datamodel.server.MailServiceImpl;
+import it.szyszka.datamodel.server.Response;
 import it.szyszka.datamodel.server.mails.EmailVerificationMessage;
 import it.szyszka.datamodel.server.security.HashGenerator;
+import it.szyszka.datamodel.server.security.VerificationToken;
 import it.szyszka.datamodel.user.User;
+import it.szyszka.datamodel.user.UserDTO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,8 @@ public class SecurityService {
 
     private static Logger logger = Logger.getLogger(SecurityService.class);
 
-    @Autowired MailServiceImpl mailService;
-    @Autowired TokenRepository tokenRepo;
+    @Autowired private MailServiceImpl mailService;
+    @Autowired private TokenRepository tokenRepo;
 
     public void createEmailVerificationRequest(User user) {
         VerificationToken token = new VerificationToken(
@@ -29,6 +32,23 @@ public class SecurityService {
         );
         tokenRepo.save(token);
         sendEmailVerificationMessage(user.getFullName(), user.getEmail(), token.getToken());
+    }
+
+    public Response verifyToken(String userToken, UserRepository userRepo) {
+        VerificationToken token = tokenRepo.findVerificationTokenByToken(userToken);
+        if(token != null) {
+            return activateUserAccount(token, userRepo);
+        } else {
+            return Response.TOKEN_NOT_FOUND;
+        }
+    }
+
+    private Response activateUserAccount(VerificationToken token, UserRepository userRepo) {
+        User user = token.getInactiveUser();
+        user.setStatus(UserDTO.ActivationStatus.ACTIVE);
+        userRepo.save(user);
+        tokenRepo.delete(token);
+        return Response.USER_ACCOUNT_ACTIVATED;
     }
 
     private void sendEmailVerificationMessage(String fullName, String email, String token) {

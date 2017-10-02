@@ -1,15 +1,12 @@
 package it.szyszka.controllers.user;
 
-import it.szyszka.datamodel.server.MailServiceImpl;
-import it.szyszka.datamodel.server.ServerResponseCode;
-import it.szyszka.datamodel.server.mails.EmailVerificationMessage;
+import it.szyszka.datamodel.server.Response;
 import it.szyszka.datamodel.user.User;
 import it.szyszka.datamodel.user.UserDTO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.internet.AddressException;
 import java.util.Set;
 
 /**
@@ -23,13 +20,17 @@ public class UserService {
     @Autowired
     UserRepository userRepo;
 
-    public ServerResponseCode saveUser(User user) {
+    public User findUserById(Long id) {
+        return userRepo.findOne(id);
+    }
+
+    public Response signUp(User user) {
         if(userRepo.findByEmail(user.getEmail()) == null) {
             if(userRepo.findByNickname(user.getNickname()) == null) {
                 userRepo.save(user);
-                return ServerResponseCode.USER_SAVED;
-            } else return ServerResponseCode.NICKNAME_TAKEN;
-        } else return ServerResponseCode.EMAIL_TAKEN;
+                return Response.USER_SAVED;
+            } else return Response.NICKNAME_TAKEN;
+        } else return Response.EMAIL_TAKEN;
     }
 
     public User findUserByEmail(String email) {

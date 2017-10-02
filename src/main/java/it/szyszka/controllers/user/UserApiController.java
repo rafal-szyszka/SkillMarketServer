@@ -1,7 +1,7 @@
 package it.szyszka.controllers.user;
 
 import it.szyszka.controllers.security.SecurityService;
-import it.szyszka.datamodel.server.ServerResponseCode;
+import it.szyszka.datamodel.server.Response;
 import it.szyszka.datamodel.server.ServerSetResponse;
 import it.szyszka.datamodel.user.User;
 import it.szyszka.datamodel.user.UserDTO;
@@ -26,14 +26,14 @@ public class UserApiController {
     @Autowired private SecurityService securityService;
 
     @RequestMapping(value = "/reg", method = RequestMethod.POST)
-    public ResponseEntity<ServerResponseCode> signUp(@RequestBody User user) {
-        ServerResponseCode status = ServerResponseCode.NO_RESPONSE;
+    public ResponseEntity<Response> signUp(@RequestBody User user) {
+        Response status = Response.NO_RESPONSE;
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         if(user != null) {
-            status = userService.saveUser(user);
+            status = userService.signUp(user);
         }
 
-        if(status == ServerResponseCode.USER_SAVED) {
+        if(status == Response.USER_SAVED) {
             securityService.createEmailVerificationRequest(user);
             httpStatus = HttpStatus.OK;
         }
@@ -60,7 +60,7 @@ public class UserApiController {
             userTrusted = userService.aTrustsB(user, toTrustEmail);
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
-                            ServerResponseCode.SUCCESSFULLY_CREATED_TRUST_RELATION,
+                            Response.SUCCESSFULLY_CREATED_TRUST_RELATION,
                             userTrusted
                     ),
                     HttpStatus.OK
@@ -69,7 +69,7 @@ public class UserApiController {
             logger.fatal(e.getMessage());
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
-                            ServerResponseCode.FAILED_TO_CREATE_TRUST_RELATION,
+                            Response.FAILED_TO_CREATE_TRUST_RELATION,
                             userTrusted
                     ),
                     HttpStatus.BAD_REQUEST
@@ -86,7 +86,7 @@ public class UserApiController {
             userFriends = userService.makeFriends(user, friendEmail);
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
-                            ServerResponseCode.SUCCESSFULLY_CREATED_FRIEND_RELATION,
+                            Response.SUCCESSFULLY_CREATED_FRIEND_RELATION,
                             userFriends
                     ),
                     HttpStatus.OK
@@ -95,7 +95,7 @@ public class UserApiController {
             logger.fatal(e.getMessage());
             return new ResponseEntity<>(
                     new ServerSetResponse<>(
-                            ServerResponseCode.FAILED_TO_CREATE_FRIEND_RELATION,
+                            Response.FAILED_TO_CREATE_FRIEND_RELATION,
                             userFriends
                     ),
                     HttpStatus.BAD_REQUEST

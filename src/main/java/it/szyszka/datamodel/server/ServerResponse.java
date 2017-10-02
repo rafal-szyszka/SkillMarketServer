@@ -12,6 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public abstract class ServerResponse {
 
-    @Getter @Setter private ServerResponseCode code;
+    @Getter @Setter private Response code;
 
 }

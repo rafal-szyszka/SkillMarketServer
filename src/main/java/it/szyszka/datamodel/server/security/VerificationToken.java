@@ -1,10 +1,7 @@
-package it.szyszka.datamodel.security;
+package it.szyszka.datamodel.server.security;
 
 import it.szyszka.datamodel.user.User;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -14,6 +11,7 @@ import org.neo4j.ogm.annotation.Relationship;
  */
 @NodeEntity
 @RequiredArgsConstructor
+@NoArgsConstructor
 public class VerificationToken {
 
     @GraphId @Getter @Setter private Long id;

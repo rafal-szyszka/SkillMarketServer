@@ -89,7 +89,7 @@ public class SkillMarketApplication {
                             AuthorityUtils.createAuthorityList("USER"));
                 } else {
                     throw new UsernameNotFoundException
-                            ("Could not find the user '" +userEmail + "'");
+                            ("Could not find the user '" + userEmail + "'");
                 }
             };
         }
@@ -103,7 +103,7 @@ public class SkillMarketApplication {
         protected void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
-                    .antMatchers("/api/user/reg").permitAll()
+                    .antMatchers("/api/user/reg", "/api/user/verifyEmail").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .httpBasic()
