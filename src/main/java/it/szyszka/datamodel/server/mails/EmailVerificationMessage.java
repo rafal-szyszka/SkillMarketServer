@@ -1,7 +1,5 @@
 package it.szyszka.datamodel.server.mails;
 
-import it.szyszka.datamodel.server.security.HashGenerator;
-import it.szyszka.datamodel.user.User;
 import it.szyszka.utils.PropertiesReader;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +14,7 @@ import java.util.Properties;
 public class EmailVerificationMessage extends SkillTradeEmail {
 
     private static final int TOKEN_INDEX = 0;
-    private static final String VERIFY_HOST = "localhost:8080/api/user/verifyEmail";
+    private static final String VERIFY_HOST = "http://192.168.0.5:8080/api/user/verifyEmail";
     public static final String PROPERTIES_FILE = "verify_email_template.properties";
 
     public static EmailVerificationMessage createMessage(String fullName, String userEmail, String... token) throws AddressException {

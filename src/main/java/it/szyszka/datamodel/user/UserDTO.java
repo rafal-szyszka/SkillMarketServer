@@ -41,8 +41,8 @@ public class UserDTO {
     @NonNull @Getter @Setter private String about;
     @NonNull @Getter @Setter private String preferredContact;
 
-    @Getter @Setter private Set<User> friends;
-    @Getter @Setter private Set<User> trusted;
+    @Getter @Setter private Set<UserDTO> friends;
+    @Getter @Setter private Set<UserDTO> trusted;
 
     public UserDTO(User user) {
         id = user.getId();
@@ -53,8 +53,8 @@ public class UserDTO {
         phoneNumber = user.getPhoneNumber();
         about = user.getAbout();
         preferredContact = user.getPreferredContact();
-        friends = user.getFriends();
-        trusted = user.getTrusted();
+        friends = UserDTO.convertToSimpleSet(user.getFriends());
+        trusted = UserDTO.convertToSimpleSet(user.getTrusted());
     }
 
     public static UserDTO getSimpleUser(User user) {
