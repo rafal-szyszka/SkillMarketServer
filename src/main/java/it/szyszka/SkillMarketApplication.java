@@ -1,14 +1,8 @@
 package it.szyszka;
 
-import it.szyszka.controllers.user.UserRepository;
-import it.szyszka.datamodel.server.MailServiceImpl;
-import it.szyszka.datamodel.server.mails.EmailVerificationMessage;
-import it.szyszka.datamodel.server.mails.MailRecipient;
-import it.szyszka.datamodel.server.mails.SkillTradeEmail;
-import it.szyszka.datamodel.user.User;
+import it.szyszka.user.repository.UserRepository;
+import it.szyszka.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -22,11 +16,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import javax.mail.internet.InternetAddress;
 import java.util.Properties;
 
 @SpringBootApplication
