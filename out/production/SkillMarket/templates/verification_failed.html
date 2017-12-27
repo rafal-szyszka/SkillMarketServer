@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>SkillTrade Verify</title>
+    <style>
+
+        .error {
+            color: #f44336;
+        }
+
+        .m_footer {
+            font-size: 34px;
+            margin-top: 50px;
+        }
+
+        .m_footer_link{
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+
+        .m_logo {
+            margin: 0;
+            background: #087f23;
+            color: #fafafa;
+        }
+
+        .m_message {
+            margin: 0;
+            background: #c7c7c7;
+            color: #212121;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="jumbotron text-center m_logo">
+    <h1>SkillTrade Application</h1>
+</div>
+<div class="jumbotron text-center m_message">
+    <h2 class="error">Upss!</h2>
+    <p>It seems like the verification token is not valid. If you are sure this is an <b class="error">error</b> please contact us by the mail below.</p>
+
+    <div class="m_footer">SkillTrade Team!</div>
+    <div><a class="m_footer_link" href="#">skilltrade@s2devs.pl</a></div>
+</div>
+
+</body>
+</html>

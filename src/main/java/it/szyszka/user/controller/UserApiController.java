@@ -1,6 +1,6 @@
 package it.szyszka.user.controller;
 
-import it.szyszka.utils.security.service.SecurityService;
+import it.szyszka.security.service.SecurityService;
 import it.szyszka.utils.server.Response;
 import it.szyszka.utils.server.ServerSetResponse;
 import it.szyszka.user.model.User;

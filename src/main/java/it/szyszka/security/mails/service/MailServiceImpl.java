@@ -1,6 +1,6 @@
-package it.szyszka.utils.security.mails.service;
+package it.szyszka.security.mails.service;
 
-import it.szyszka.utils.security.mails.model.SkillTradeEmail;
+import it.szyszka.security.mails.model.SkillTradeEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;

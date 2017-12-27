@@ -45,16 +45,18 @@ public class UserDTO {
     @Getter @Setter private Set<UserDTO> trusted;
 
     public UserDTO(User user) {
-        id = user.getId();
-        nickname = user.getNickname();
-        fullName = user.getFullName();
-        email = user.getEmail();
-        mailingAddress = user.getMailingAddress();
-        phoneNumber = user.getPhoneNumber();
-        about = user.getAbout();
-        preferredContact = user.getPreferredContact();
-        friends = UserDTO.convertToSimpleSet(user.getFriends());
-        trusted = UserDTO.convertToSimpleSet(user.getTrusted());
+        if(user != null) {
+            id = user.getId();
+            nickname = user.getNickname();
+            fullName = user.getFullName();
+            email = user.getEmail();
+            mailingAddress = user.getMailingAddress();
+            phoneNumber = user.getPhoneNumber();
+            about = user.getAbout();
+            preferredContact = user.getPreferredContact();
+            friends = UserDTO.convertToSimpleSet(user.getFriends());
+            trusted = UserDTO.convertToSimpleSet(user.getTrusted());
+        }
     }
 
     public static UserDTO getSimpleUser(User user) {

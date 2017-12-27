@@ -1,4 +1,4 @@
-package it.szyszka.utils.security.service;
+package it.szyszka.security.service;
 
 import com.google.common.hash.Hashing;
 

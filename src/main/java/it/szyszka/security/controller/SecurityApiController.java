@@ -1,7 +1,7 @@
-package it.szyszka.utils.security.controller;
+package it.szyszka.security.controller;
 
 import it.szyszka.user.repository.UserRepository;
-import it.szyszka.utils.security.service.SecurityService;
+import it.szyszka.security.service.SecurityService;
 import it.szyszka.utils.server.Response;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

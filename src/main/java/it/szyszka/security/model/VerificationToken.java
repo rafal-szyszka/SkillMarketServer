@@ -1,4 +1,4 @@
-package it.szyszka.utils.security.model;
+package it.szyszka.security.model;
 
 import it.szyszka.user.model.User;
 import lombok.*;

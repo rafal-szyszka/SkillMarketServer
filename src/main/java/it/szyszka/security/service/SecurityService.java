@@ -1,11 +1,11 @@
-package it.szyszka.utils.security.service;
+package it.szyszka.security.service;
 
-import it.szyszka.utils.security.repository.TokenRepository;
+import it.szyszka.security.repository.TokenRepository;
 import it.szyszka.user.repository.UserRepository;
-import it.szyszka.utils.security.mails.service.MailServiceImpl;
+import it.szyszka.security.mails.service.MailServiceImpl;
 import it.szyszka.utils.server.Response;
-import it.szyszka.utils.security.mails.model.EmailVerificationMessage;
-import it.szyszka.utils.security.model.VerificationToken;
+import it.szyszka.security.mails.model.EmailVerificationMessage;
+import it.szyszka.security.model.VerificationToken;
 import it.szyszka.user.model.User;
 import it.szyszka.user.model.UserDTO;
 import org.apache.log4j.Logger;

@@ -1,4 +1,4 @@
-package it.szyszka.utils.security.mails.model;
+package it.szyszka.security.mails.model;
 
 import it.szyszka.utils.PropertiesReader;
 import lombok.NoArgsConstructor;
